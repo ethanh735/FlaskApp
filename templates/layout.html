@@ -11,32 +11,32 @@
 	<link href="{{ url_for("static", filename="main.css") }}" rel="stylesheet" type="text/css">
 	
      {% if title %}
-         <title>Flask Blog - {{ title }}</title>
+         <title>Blog Site - {{ title }}</title>
      {% else %}
-         <title>Flask Blog</title>
+         <title>COS243 Final Project Blog Site</title>
      {% endif %}
  </head>
  <body>
  	<!-- Styling -->
  	<header class="site-header">
 		<nav class="navbar navbar-expand-md navbar-dark bg-steel fixed-top">
-			<!-- Navbar name and info -->
+			<!--Navbar name and info-->
 			<div class="container">
-				<a class="navbar-brand mr-4" href="/">Flask Blog</a>
+				<a class="navbar-brand mr-4" href="/">COS243 Final Project Blog Site</a>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target>
 					<span class="navbar-toggler-icon"></span>
 				</button>
-				<!-- The Navbar can be collapsed out of view -->	
+				<!--main Navbar-->
 				<div class="collapse navbar-collapse" id="navbarToggle">
 					<div class="navbar-nav mr-auto">
-						<a class="nav-item nav-link" href="/">Index</a>
-						<a class="nav-item nav-link" href="/home">Home</a>
-						<a class="nav-item nav-link" href="/about">About</a>
+						<a class="nav-item nav-link" href="{{ url_for("index") }}">Index</a>
+						<a class="nav-item nav-link" href="{{ url_for("home") }}">Home</a>
+						<a class="nav-item nav-link" href="{{ url_for("about") }}">About</a>
 					</div>
-					<!-- Right side Navbar -->
+					<!--right side Navbar-->
 					<div class="navbar-nav">
-						<a class="nav-item nav-link" href="/login">Login</a>
-						<a class="nav-item nav-link" href="/register">Register</a>
+						<a class="nav-item nav-link" href="{{ url_for("login") }}">Login</a>
+						<a class="nav-item nav-link" href="{{ url_for("register") }}">Register</a>
 					</div>
 				</div>
 			</div>
@@ -46,6 +46,7 @@
 	<!-- Stylized content block -->
 	<main role="main" class="container">
 		<div class="row">
+			<!--blog posts-->
 			<div class="col-md-8">
 				<!--prints received flash messages, responds to message type-->
 				{% with messages = get_flashed_messages(with_categories=true) %}
@@ -59,6 +60,7 @@
 				{% endwith %}
 				{% block content %}{% endblock %}
 			</div>
+			<!--sidebar-->
 			<div class="col-md-4">
 				<div class="content-section">
 					<h3>The Sidebar</h3>
