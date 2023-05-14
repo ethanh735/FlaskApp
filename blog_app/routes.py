@@ -1,8 +1,9 @@
 from flask import render_template, url_for, flash, redirect
-from blog_app import app
+from blog_app import app, db, bcrypt
 # from forms.py, same directory layer
 from blog_app.forms import RegistrationForm, LoginForm
 from blog_app.models import User, Post
+from flask_login import login_user, current_user, logout_user
 
 
 # post dummy data
@@ -36,25 +37,41 @@ def about():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+	if current_user.is_authenticated:
+		return redirect(url_for("home"))
 	# uses login form for credentials
 	form = LoginForm()
 	if form.validate_on_submit():
-		if form.email.data == "a@gmail.com" and form.password.data == "123":
-			# flash messages send one time alerts
-			flash(f"You have been logged in!", "success")
+		user = User.query.filter_by(email=form.email.data).first()
+		# if email is in database and passwords match
+		if user and bcrypt.check_password_hash(user.password, form.password.data):
+			login_user(user, remember=form.remember.data)
 			return redirect(url_for("home"))
 		else:
-			flash(f"Login unsuccessful, please check username and password.", "danger")
+			flash(f"Login unsuccessful, please check email and password.", "danger")
 	return render_template("login.html", title="Login", form=form)
+
+@app.route("/logout")
+def logout():
+	logout_user()
+	return redirect(url_for("home"))
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+	if current_user.is_authenticated:
+		return redirect(url_for("home"))
 	# uses registration form for credentials
 	form = RegistrationForm()
 	if form.validate_on_submit():
+		# password handling for database
+		hashed_password = bcrypt.generate_password_hash(form.password.data).decode("utf-8")
+		# initialize user for database
+		user = User(username=form.username.data, email=form.email.data, password=hashed_password)
+		db.session.add(user)
+		db.session.commit()
 		# flash messages send one time alerts
-		flash(f"Account created for {form.username.data}!", "success")
-		return redirect(url_for("home"))
+		flash(f"Account created for {form.username.data}! You are now able to log in.", "success")
+		return redirect(url_for("login"))
 	return render_template("register.html", title="Register", form=form)
 
 @app.route("/hello")
