@@ -1,14 +1,11 @@
-from flask import Flask, render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect
+from blog_app import app
 # from forms.py, same directory layer
-from forms import RegistrationForm, LoginForm
-# escape user data to prevent script injection
-from markupsafe import escape
+from blog_app.forms import RegistrationForm, LoginForm
+from blog_app.models import User, Post
 
-app = Flask(__name__)
 
-# secret key prevents cross-site request / cookie changes
-app.config["SECRET_KEY"] = "b368e6ea06db12e08f25c58465daf913"
-
+# post dummy data
 posts = [
 {
 	"author": "first author",
@@ -24,6 +21,7 @@ posts = [
 }
 ]
 
+# routes throughout app
 @app.route("/")
 def index():
 	return render_template("index.html", title="Index")
