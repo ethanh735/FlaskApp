@@ -1,7 +1,7 @@
 # Python classes converted to html forms when in a template
 from flask_wtf import FlaskForm
 # Fields and validations available for form
-from wtforms import StringField, PasswordField, SubmitField, BooleanField, validators, ValidationError
+from wtforms import StringField, PasswordField, SubmitField, BooleanField, TextAreaField, validators, ValidationError
 from blog_app.models import User
 
 class RegistrationForm(FlaskForm):
@@ -33,3 +33,7 @@ class LoginForm(FlaskForm):
 	remember = BooleanField("Remember Me")
 	submit = SubmitField("Login")
 
+class PostForm(FlaskForm):
+	title = StringField("Title", validators=[validators.DataRequired()])
+	content = TextAreaField("Content", validators=[validators.DataRequired()])
+	submit = SubmitField("Post")

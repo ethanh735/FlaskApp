@@ -29,13 +29,13 @@
 				<!--main Navbar-->
 				<div class="collapse navbar-collapse" id="navbarToggle">
 					<div class="navbar-nav mr-auto">
-						<a class="nav-item nav-link" href="{{ url_for("index") }}">Index</a>
 						<a class="nav-item nav-link" href="{{ url_for("home") }}">Home</a>
 						<a class="nav-item nav-link" href="{{ url_for("about") }}">About</a>
 					</div>
 					<!--right side Navbar-->
 					<div class="navbar-nav">
 						{% if current_user.is_authenticated %}
+							<a class="nav-item nav-link" href="{{ url_for("new_post") }}">New Post</a>
 							<a class="nav-item nav-link" href="{{ url_for("logout") }}">Logout</a>
 						{% else%}
 							<a class="nav-item nav-link" href="{{ url_for("login") }}">Login</a>
@@ -63,20 +63,6 @@
 					{% endif %}
 				{% endwith %}
 				{% block content %}{% endblock %}
-			</div>
-			<!--sidebar-->
-			<div class="col-md-4">
-				<div class="content-section">
-					<h3>The Sidebar</h3>
-					<p class="text-muted">Put any information you'd like here.</p>
-						<ul>
-							<li>Latest Posts</li>
-							<li>Announcements</li>
-							<li>Calendars</li>
-							<li>etc</li>
-						</ul>
-					</p>
-				</div>
 			</div>
 		</div>
 	</main>

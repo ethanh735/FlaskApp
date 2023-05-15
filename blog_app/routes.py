@@ -1,40 +1,24 @@
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, abort, request
 from blog_app import app, db, bcrypt
 # from forms.py, same directory layer
-from blog_app.forms import RegistrationForm, LoginForm
+from blog_app.forms import RegistrationForm, LoginForm, PostForm
 from blog_app.models import User, Post
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 
-
-# post dummy data
-posts = [
-{
-	"author": "first author",
-	"title": "this is a title",
-	"content": "content of my first post!",
-	"date_posted": "May 11, 2023"
-},
-{
-	"author": "another author",
-    "title": "this title is different",
-    "content": "A different post?",
-    "date_posted": "May 09, 2023"
-}
-]
-
-# routes throughout app
+# routes throughout app:
+# home page with all posts
 @app.route("/")
-def index():
-	return render_template("index.html", title="Index")
-
 @app.route("/home")
-def home():                                                                                     
+def home():
+	posts = Post.query.all()
 	return render_template("home.html", title="Home", posts=posts)
 
+# about page
 @app.route("/about")
 def about():
 	return render_template("about.html", title="About")
 
+# log into a registered account
 @app.route("/login", methods=["GET", "POST"])
 def login():
 	if current_user.is_authenticated:
@@ -51,11 +35,14 @@ def login():
 			flash(f"Login unsuccessful, please check email and password.", "danger")
 	return render_template("login.html", title="Login", form=form)
 
+# log out of current account
 @app.route("/logout")
 def logout():
 	logout_user()
+	flash(f"Logged out.", "info")
 	return redirect(url_for("home"))
 
+# register for an account
 @app.route("/register", methods=["GET", "POST"])
 def register():
 	if current_user.is_authenticated:
@@ -74,6 +61,54 @@ def register():
 		return redirect(url_for("login"))
 	return render_template("register.html", title="Register", form=form)
 
-@app.route("/hello")
-def hello_world():
-	return "<p>Hello, World!</p>"
+# create a new post
+@app.route("/post/new", methods=["GET", "POST"])
+@login_required
+def new_post():
+	form = PostForm()
+	if form.validate_on_submit():
+		post = Post(title=form.title.data, content=form.content.data, author=current_user)
+		db.session.add(post)
+		db.session.commit()
+		# flash messages send one time alerts
+		flash("Your post has been created!", "success")
+		return redirect(url_for("home"))
+	return render_template("create_post.html", title="New Post", form=form, legend="New Post")
+
+# view individual posts
+@app.route("/post/<int:post_id>")
+def post(post_id):
+	post = Post.query.get_or_404(post_id)
+	return render_template("post.html", title=post.title, post=post)
+
+# update a given post
+@app.route("/post/<int:post_id>/update", methods=["GET", "POST"])
+@login_required
+def update_post(post_id):
+	post = Post.query.get_or_404(post_id)
+	if post.author != current_user:
+		abort(403)
+
+	form = PostForm()
+	if form.validate_on_submit():
+		post.title = form.title.data
+		post.content = form.content.data
+		db.session.commit()
+		flash("Post updated successfully!", "success")
+		return redirect(url_for("post", post_id=post.id))
+	elif request.method == "GET":
+		form.title.data = post.title
+		form.content.data = post.content
+	return render_template("create_post.html", title="Update Post", form=form, legend="Update Post")
+	
+# delete a given post
+@app.route("/post/<int:post_id>/delete", methods=["POST"])
+@login_required
+def delete_post(post_id):
+	post = Post.query.get_or_404(post_id)
+	if post.author != current_user:
+		abort(403)
+	db.session.delete(post)
+	db.session.commit()
+	flash("Post deleted successfully!", "success")
+	return redirect(url_for("home"))
