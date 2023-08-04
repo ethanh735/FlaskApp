@@ -1,4 +1,5 @@
 from flask import Flask
+# creates SQL database per app instance
 from flask_sqlalchemy import SQLAlchemy
 # hashes passwords to prevent theft
 from flask_bcrypt import Bcrypt

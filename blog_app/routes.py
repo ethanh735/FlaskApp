@@ -1,6 +1,6 @@
 from flask import render_template, url_for, flash, redirect, abort, request
 from blog_app import app, db, bcrypt
-# from forms.py, same directory layer
+# from other Python files, same directory layer
 from blog_app.forms import RegistrationForm, LoginForm, PostForm
 from blog_app.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
