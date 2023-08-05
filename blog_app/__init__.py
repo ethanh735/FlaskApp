@@ -1,3 +1,4 @@
+# This file tells Python that the project is package structure
 from flask import Flask
 # creates SQL database per app instance
 from flask_sqlalchemy import SQLAlchemy

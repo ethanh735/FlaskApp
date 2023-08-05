@@ -30,6 +30,7 @@ def login():
 		# if email is in database and passwords match
 		if user and bcrypt.check_password_hash(user.password, form.password.data):
 			login_user(user, remember=form.remember.data)
+			flash(f"Logged in!", "info")
 			return redirect(url_for("home"))
 		else:
 			flash(f"Login unsuccessful, please check email and password.", "danger")
@@ -60,6 +61,12 @@ def register():
 		flash(f"Account created for {form.username.data}! You are now able to log in.", "success")
 		return redirect(url_for("login"))
 	return render_template("register.html", title="Register", form=form)
+
+@app.route("/account")
+@login_required
+def account():
+	image_file = url_for("static", filename="profile_pics/" + current_user.image_file)
+	return render_template("account.html", title="Account", image_file=image_file)
 
 # create a new post
 @app.route("/post/new", methods=["GET", "POST"])
