@@ -159,5 +159,8 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
+# Profile pictures in database
+profile_pics/
+
 # Other application creations
 .DS_Store
