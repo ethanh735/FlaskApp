@@ -1,5 +1,6 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
+blog_app/__pycache__/
 *.py[cod]
 *$py.class
 
@@ -160,7 +161,8 @@ cython_debug/
 #.idea/
 
 # Profile pictures in database
-profile_pics/
+blog_app/static/profile_pics/
 
 # Other application creations
-.DS_Store
+blog_app/.DS_Store
+blog_app/static/.DS_Store
