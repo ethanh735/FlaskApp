@@ -164,5 +164,6 @@ cython_debug/
 blog_app/static/profile_pics/
 
 # Other application creations
+.DS_Store
 blog_app/.DS_Store
 blog_app/static/.DS_Store
