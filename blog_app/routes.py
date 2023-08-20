@@ -66,7 +66,6 @@ def register():
 		return redirect(url_for("login"))
 	return render_template("register.html", title="Register", form=form)
 
-# TODO: delete old picture file when profile picture is changed
 def save_picture(form_picture):
 	# randomizes file name to prevent database collision
 	random_hex = secrets.token_hex(8)
@@ -90,6 +89,7 @@ def account():
 	if form.validate_on_submit():
 		# not a required field
 		if form.picture.data:
+			os.remove(app.root_path + "/static/profile_pics/" + current_user.image_file)
 			picture_file = save_picture(form.picture.data)
 			current_user.image_file = picture_file
 		current_user.username = form.username.data
