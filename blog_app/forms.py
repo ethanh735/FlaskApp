@@ -30,6 +30,7 @@ class RegistrationForm(FlaskForm):
 		if user:
 			raise ValidationError("Email is taken. Please choose another email.")
 
+#TODO: implement "remember me" functionality
 class LoginForm(FlaskForm):
     # Validates existence and correct type
 	email = StringField("Email", validators=[validators.DataRequired(), validators.Email()])
