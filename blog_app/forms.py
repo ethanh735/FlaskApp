@@ -20,13 +20,13 @@ class RegistrationForm(FlaskForm):
 	# custom validations for already registered user
 	def validate_username(self, username):
 		user = User.query.filter_by(username=username.data).first()
-		# if user is anything other than none
+		# if user exists
 		if user:
 			raise ValidationError("Username is taken. Please choose another username.")
 		
 	def validate_email(self, email):
 		user = User.query.filter_by(email=email.data).first()
-		# if user is anything other than none
+		# if user exists
 		if user:
 			raise ValidationError("Email is taken. Please choose another email.")
 
@@ -57,7 +57,7 @@ class UpdateAccountForm(FlaskForm):
 		# only checked if username is changed
 		if username.data != current_user.username:
 			user = User.query.filter_by(username=username.data).first()
-			# if user is anything other than none
+			# if user exists
 			if user:
 				raise ValidationError("Username is taken. Please choose another username.")
 		
@@ -65,6 +65,21 @@ class UpdateAccountForm(FlaskForm):
 		# only checked if email is changed
 		if email.data != current_user.email:
 			user = User.query.filter_by(email=email.data).first()
-			# if user is anything other than none
+			# if user exists
 			if user:
 				raise ValidationError("Email is taken. Please choose another email.")
+
+class RequestResetForm(FlaskForm):
+	email = StringField("Email", validators=[validators.DataRequired(), validators.Email()])
+	submit = SubmitField("Request Password Reset")
+
+	def validate_email(self, email):
+		user = User.query.filter_by(email=email.data).first()
+		# if user doesn't exist
+		if user is None:
+			raise ValidationError("There is no account with this email. You must register an account first.")
+
+class ResetPasswordForm(FlaskForm):
+	password = PasswordField("Password", validators=[validators.DataRequired()])
+	confirm_password = PasswordField("Confirm Password", validators=[validators.DataRequired(), validators.EqualTo("password")])
+	submit = SubmitField("Reset Password")

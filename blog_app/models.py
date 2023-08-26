@@ -1,7 +1,9 @@
 from datetime import datetime
-from blog_app import db, login_manager
+from blog_app import db, login_manager, app
 # automatically brings in user model attribute requirements
 from flask_login import UserMixin
+# used to make sure that only email access can reset account password
+from itsdangerous.serializer import Serializer
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -16,6 +18,20 @@ class User(db.Model, UserMixin):
 	password =  db.Column(db.String(60), nullable=False)
 	# interrelates users and posts: one to many
 	posts = db.relationship("Post", backref="author", lazy=True)
+
+#	def get_reset_token(self, expires_sec=1800):
+#		s = Serializer(app.config["SECRET_KEY"], expires_sec)
+#		return s.dumps(["user_id": self.id])
+
+	@staticmethod
+	def verify_reset_token(token):
+		s = Serializer(app.config["SECRET_KEY"])
+		# several exceptions possible with token
+		try:
+			user_id = s.loads(token)["user_id"]
+		except:
+			return None
+		return User.query.get(user_id)
 
 	def __repr__(self):
 		return f"User('{self.username}', '{self.email}', 'self.image_file')"
