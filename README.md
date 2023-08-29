@@ -17,7 +17,8 @@ In addition to flask, this application uses several dependencies and libraries, 
 - datetime
 - os
 - secrets
-- PIL
+- PIL (pillow)
+- email_validator
 
 In order to run the application, use ``pip3 install <library>`` for each dependency (preferrably in a virtual environment) to tie everything together.
 
