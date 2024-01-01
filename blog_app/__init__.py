@@ -6,11 +6,13 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 # login session manager
 from flask_login import LoginManager
+# import python environment variables
+import os
 
 # app initialization
 app = Flask(__name__)
-# secret key prevents cross-site request / cookie changes
-app.config["SECRET_KEY"] = "b368e6ea06db12e08f25c58465daf913"
+# secret key prevents cross-site request forgery (CSRF) / cookie changes, environment variable in .bash_profile
+app.config["SECRET_KEY"] = os.environ.get("KEY")
 # SQLite database file location, relative path
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
 db = SQLAlchemy(app)

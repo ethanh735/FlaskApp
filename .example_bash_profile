@@ -1,0 +1,9 @@
+# Python environment variables for blog application project built with flask                                             
+export FLASK_APP=run.py
+export KEY="b368e6ea06db12e08f25c58465daf913"
+
+
+# Setting PATH for Python 3.11
+# The original version is saved in .bash_profile.pysave
+PATH="/Library/Frameworks/Python.framework/Versions/3.11/bin:${PATH}"
+export PATH
